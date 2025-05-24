@@ -10,7 +10,6 @@
     },
     "preview": {
       "distribution": "internal",
-      "developmentClient": true,
       "env": {
         "EXPO_PUBLIC_API_URL": "https://tcc-apps-backend.onrender.com/api/v1",
         "EXPO_PUBLIC_ENV": "preview"
