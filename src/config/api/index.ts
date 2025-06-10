@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_URL } from "../enviroments";
 
-console.log("Url de la api de render", API_URL);
+console.log("Url de la api", API_URL);
 
 const ApiInstance = axios.create({
   baseURL: `${API_URL}`,

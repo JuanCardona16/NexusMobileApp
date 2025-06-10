@@ -2,11 +2,10 @@ import images from "@/assets/images";
 import ViewContainer from "@/src/components/layouts/container";
 import ButtonBase from "@/src/components/shared/Button";
 import TextBase from "@/src/components/shared/TextBase";
-import { API_URL } from "@/src/config/enviroments";
 import { ThemeColors } from "@/src/constants";
 import { TextFontSize } from "@/src/styles/global.styles";
 import { Link, useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import React from "react";
 import { Dimensions, Image, StyleSheet, View } from "react-native";
 
 const windowWidth = Dimensions.get("window").width;
@@ -19,9 +18,9 @@ export default function Welcome() {
 		router.push("/login");
 	};
 
-	const handlerLoginGoogleService = () => {
-		router.push("/login");
-	};
+	// const handlerLoginGoogleService = () => {
+	// 	router.push("/login");
+	// };
 
 	return (
 		<ViewContainer>
@@ -68,17 +67,17 @@ export default function Welcome() {
 						Elige cómo quieres continuar:
 					</TextBase>
 					<View style={{ gap: 12, marginTop: 14 }}>
-						<ButtonBase
+						{/* <ButtonBase
 							title="Iniciar sesión con Google"
 							variant="outline"
 							onPress={handlerLoginGoogleService}
 							activeOpacity={0.1}
-						/>
+						/> */}
 						<ButtonBase
 							title="Continuar con Correo"
 							onPress={handlerNavigateLoginScreen}
-              activeOpacity={0.1}
-              colorText="#fff"
+							activeOpacity={0.1}
+							colorText="#fff"
 						/>
 					</View>
 					<TextBase
@@ -116,7 +115,7 @@ const welcomeStyles = StyleSheet.create({
 	},
 	image: {
 		width: windowWidth * 0.9,
-		height: windowHeight * 0.4, // Ajusta la altura según lo que necesites
+		height: windowHeight * 0.5, // Ajusta la altura según lo que necesites
 	},
 	// Botón de logout (opcional)
 	logoutButton: {

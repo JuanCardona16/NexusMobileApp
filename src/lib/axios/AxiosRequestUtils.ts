@@ -34,6 +34,7 @@ class RequestHelpers {
       });
       return response.data as T;
     } catch (error) {
+      console.log(error)
       throw new Error(
         `Error in ${methods.toUpperCase()} request to ${path}: ${error}`
       );

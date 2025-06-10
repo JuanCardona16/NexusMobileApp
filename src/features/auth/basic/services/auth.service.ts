@@ -13,7 +13,7 @@ class AuthenticationServices {
 	 * @returns Una promesa que resuelve con un objeto que indica si la operación fue exitosa y los datos asociados.
 	 */
 	login = async (data: LoginRequestData) => {
-		return RequestHelpers.makeRequest<{ success: boolean; data: string }>(
+		return RequestHelpers.makeRequest<{ access_token: string }>(
 			"post",
 			ConsultationsPaths.LOGIN,
 			undefined,
@@ -28,7 +28,7 @@ class AuthenticationServices {
 	 * @returns Una promesa que resuelve con un objeto que indica si la operación fue exitosa y los datos asociados.
 	 */
 	register = async (data: RegisterRequestData) => {
-		return RequestHelpers.makeRequest<{ success: boolean; data: string }>(
+		return RequestHelpers.makeRequest<{ access_token: string }>(
 			"post",
 			ConsultationsPaths.REGISTER,
 			undefined,

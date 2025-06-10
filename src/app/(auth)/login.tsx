@@ -145,14 +145,14 @@ export default function Login() {
 						<View
 							style={{ flexDirection: "row", justifyContent: "space-between" }}>
 							<TextBase size={TextFontSize.H3}>Contraseña:</TextBase>
-							<Link href="/">
+							{/* <Link href="/">
 								<TextBase
 									size={TextFontSize.PARAGRAPH}
 									color={ThemeColors.secondary}
 									align="right">
 									¿Olvidaste tu contraseña?
 								</TextBase>
-							</Link>
+							</Link> */}
 						</View>
 						<TextInput
 							placeholder="Escribe aquí..."

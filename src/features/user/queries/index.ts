@@ -9,14 +9,14 @@ export const useProfile = () => {
 		queryKey: ["user/profile", token],
 		queryFn: () => UserServices.getUserProfile(token!),
 		retry: 1,
-		enabled: !!token,
+		enabled: !!token 
 	});
 
 	return {
 		profile: query.data,
-		isPending: query.isLoading,
-		isError: query.isError,
-		error: query.error,
-		isSuccess: query.isSuccess,
+		isFetchingUser: query.isLoading,
+		isUserFetchError: query.isError,
+		userFetchError: query.error,
+		isUserFetchSuccess: query.isSuccess,
 	};
 };
