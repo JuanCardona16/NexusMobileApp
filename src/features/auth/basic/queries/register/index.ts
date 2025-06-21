@@ -28,8 +28,8 @@ export const useRegister = () => {
 		mutationKey: ["auth/register"],
 		mutationFn: AuthenticationServices.register,
 		onSuccess: (data) => {
-			if (data.success) {
-				setToken(data.data);
+			if (data.access_token) {
+				setToken(data.access_token);
 				// Navigate to the home page
 				openRegisterSuccess();
 				setTimeout(() => {
