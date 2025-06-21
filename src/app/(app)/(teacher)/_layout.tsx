@@ -49,7 +49,7 @@ export default function ProfessorTabsLayout() {
 				),
 			}}>
 			<Tabs.Screen
-				name="index" // Esto mapea a app/(app)/(professor)/dashboard.tsx
+				name="index"
 				options={{
 					title: "Panel Profesor",
 					tabBarIcon: ({ color, size }) => (
@@ -59,28 +59,55 @@ export default function ProfessorTabsLayout() {
 							size={size}
 						/>
 					),
-					headerShown: false,
 				}}
 			/>
-			{/* <Tabs.Screen
-        name="students" // Esto mapea a app/(app)/(professor)/students.tsx
-        options={{
-          title: 'Mis Estudiantes',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-group" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="grades" // Esto mapea a app/(app)/(professor)/grades.tsx
-        options={{
-          title: 'Notas',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="pencil" color={color} size={size} />
-          ),
-        }}
-      /> */}
-			{/* Puedes añadir más Tabs.Screen para otras pantallas de profesor */}
+			<Tabs.Screen
+				name="courses"
+				options={{
+					title: "Mis Cursos",
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="view-dashboard"
+							color={color}
+							size={size}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="(profile)/index"
+				options={{
+					title: "Perfil",
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="view-dashboard"
+							color={color}
+							size={size}
+						/>
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="(profile)/edit-profile"
+				options={{
+					headerShown: false,
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="(profile)/notifications"
+				options={{
+					headerShown: false,
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="(profile)/settings"
+				options={{
+					headerShown: false,
+					href: null,
+				}}
+			/>
 		</Tabs>
 	);
 }

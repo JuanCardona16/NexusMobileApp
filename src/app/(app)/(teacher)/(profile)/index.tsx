@@ -1,74 +1,81 @@
 // ProfileScreen.tsx
-import ViewContainer from "@/src/components/layouts/container";
-import TextBase from "@/src/components/shared/TextBase";
-import { useAuthState } from "@/src/core/hooks/zustand/useAuthState";
-import { useUserState } from "@/src/core/hooks/zustand/useUserState";
-import { Palete, TextFontSize } from "@/src/styles/global.styles";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React from "react";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import ViewContainer from '@/src/components/layouts/container';
+import TextBase from '@/src/components/shared/TextBase';
+import { useAuthState } from '@/src/core/hooks/zustand/useAuthState';
+import { useUserState } from '@/src/core/hooks/zustand/useUserState';
+import { Palete, TextFontSize } from '@/src/styles/global.styles';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import {
+  View,
+  Image,
+  ScrollView,
+  Pressable,
+} from 'react-native';
 
 interface MenuItem {
-	icon: keyof typeof Ionicons.glyphMap;
-	label: string;
-	onPress: () => void;
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
 }
 
 export default function Profile() {
-	const { user } = useUserState();
-	const { clearToken } = useAuthState();
+  const { user } = useUserState()
+	const { clearToken } = useAuthState()
 	const router = useRouter();
 
-	const menuItems: MenuItem[] = [
+	console.log("user information:", user)
+
+  const menuItems: MenuItem[] = [
 		{
 			icon: "person-outline",
 			label: "Editar Perfil",
-			onPress: () => router.push("/edit-profile"),
+			onPress: () => router.push("/(app)/(teacher)/(profile)/edit-profile"),
 		},
 		{
 			icon: "notifications-outline",
 			label: "Notificaciones",
-			onPress: () => router.push("/notifications"),
+			onPress: () => router.push("/(app)/(teacher)/(profile)/notifications"),
 		},
 		{
 			icon: "settings-outline",
 			label: "Configuración",
-			onPress: () => router.push("/settings"),
+			onPress: () => router.push("/(app)/(teacher)/(profile)/settings"),
 		},
 	];
 
-	const MenuItem = ({ icon, label, onPress }: MenuItem) => (
-		<Pressable
-			onPress={onPress}
-			style={({ pressed }) => ({
-				flexDirection: "row",
-				alignItems: "center",
-				backgroundColor: pressed ? "#f5f5f5" : "#fff",
-				padding: 15,
-				borderRadius: 10,
-				marginBottom: 10,
-			})}>
-			<View
-				style={{
-					backgroundColor: "#f0f0f0",
-					borderRadius: 20,
-					padding: 10,
-					marginRight: 15,
-				}}>
-				<Ionicons name={icon} size={24} color="#007AFF" />
-			</View>
-			<TextBase size={TextFontSize.PARAGRAPH}>{label}</TextBase>
-			<Ionicons
-				name="chevron-forward"
-				size={20}
-				color="#999"
-				style={{ marginLeft: "auto" }}
-			/>
-		</Pressable>
-	);
+  const MenuItem = ({ icon, label, onPress }: MenuItem) => (
+    <Pressable 
+      onPress={onPress}
+      style={({ pressed }) => ({
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: pressed ? '#f5f5f5' : '#fff',
+        padding: 15,
+        borderRadius: 10,
+        marginBottom: 10,
+      })}
+    >
+      <View style={{
+        backgroundColor: '#f0f0f0',
+        borderRadius: 20,
+        padding: 10,
+        marginRight: 15
+      }}>
+        <Ionicons name={icon} size={24} color="#007AFF" />
+      </View>
+      <TextBase size={TextFontSize.PARAGRAPH}>{label}</TextBase>
+      <Ionicons 
+        name="chevron-forward" 
+        size={20} 
+        color="#999"
+        style={{ marginLeft: 'auto' }}
+      />
+    </Pressable>
+  );
 
-	return (
+  return (
 		<ViewContainer bgColor={Palete.background}>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={{ alignItems: "center", marginBottom: 30 }}>
@@ -98,24 +105,13 @@ export default function Profile() {
 					<View
 						style={{
 							flexDirection: "row",
-							justifyContent: "space-around",
+							flexWrap: "wrap",
+							justifyContent: "center",
 							backgroundColor: "#fff",
 							borderRadius: 15,
 							padding: 20,
 							marginBottom: 20,
 						}}>
-						<View style={{ alignItems: "center" }}>
-							<TextBase size={TextFontSize.H3} weight="bold">
-								{user?.studentCode}
-							</TextBase>
-							<TextBase style={{ color: "#666" }}>Codigo Estudiantil</TextBase>
-						</View>
-						<View
-							style={{
-								width: 1,
-								backgroundColor: "#e0e0e0",
-							}}
-						/>
 						<View style={{ alignItems: "center" }}>
 							<TextBase size={TextFontSize.H3} weight="bold">
 								{user?.rol === "STUDENT" ? "Estudiante" : "Profesor"}
@@ -129,8 +125,8 @@ export default function Profile() {
 					))}
 				</View>
 
-				<Pressable
-					onPressIn={() => clearToken()}
+        <Pressable
+          onPressIn={() => clearToken()}
 					style={{
 						flexDirection: "row",
 						alignItems: "center",

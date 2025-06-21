@@ -1,213 +1,95 @@
-// ScheduleScreen.tsx
+import { useSchedule } from "@/src/core/hooks/useSchedule";
+import { useGlobal } from "@/src/features/global/hooks";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useCallback, useMemo, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { Calendar, CalendarUtils } from "react-native-calendars";
+import React, { useMemo } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Calendar } from "react-native-calendars";
 
-const scheduleData: {
-	id: number;
-	subject: string;
-	room: string;
-	time: string;
-	teacher?: string;
-	type?: string;
-	color?: string;
-	date?: {
-		dateString: string;
-		day: number;
-		month: number;
-		year: number;
-	};
-	assignments?: { title: string; dueDate: string }[];
-}[] = [
-	{
-		id: 1,
-		subject: "Mathematics",
-		room: "Building A - Room 201",
-		time: "9:00 AM - 10:00 AM",
-		teacher: "Dr. Smith",
-		type: "Lecture",
-		color: "#4287f5",
-		assignments: [
-			{
-				title: "Calculus Quiz",
-				dueDate: "2024-03-20",
-			},
-		],
-		date: {
-			dateString: "2025-06-10",
-			day: 10,
-			month: 6,
-			year: 2025,
-		},
-	},
-	{
-		id: 2,
-		subject: "Physics 201",
-		room: "Room 202",
-		time: "10:00 AM - 11:00 AM",
-		teacher: "Dr. Smith",
-		type: "Lecture",
-		color: "#4287f5",
-		assignments: [
-			{
-				title: "Calculus Quiz",
-				dueDate: "2024-03-20",
-			},
-		],
-		date: {
-			dateString: "2025-06-10",
-			day: 10,
-			month: 6,
-			year: 2025,
-		},
-	},
-	{
-		id: 3,
-		subject: "Chemistry 301",
-		room: "Room 203",
-		time: "11:00 AM - 12:00 PM",
-		teacher: "Dr. Smith",
-		type: "Lecture",
-		color: "#4287f5",
-		assignments: [
-			{
-				title: "Calculus Quiz",
-				dueDate: "2024-03-20",
-			},
-		],
-		date: {
-			dateString: "2025-06-10",
-			day: 10,
-			month: 6,
-			year: 2025,
-		},
-	},
-	{
-		id: 4,
-		subject: "Biology 401",
-		room: "Room 204",
-		time: "1:00 PM - 2:00 PM",
-		teacher: "Dr. Smith",
-		type: "Lecture",
-		color: "#4287f5",
-		assignments: [
-			{
-				title: "Calculus Quiz",
-				dueDate: "2024-03-20",
-			},
-		],
-		date: {
-			dateString: "2025-06-10",
-			day: 10,
-			month: 6,
-			year: 2025,
-		},
-	},
-	{
-		id: 5,
-		subject: "Computer Science 501",
-		room: "Room 205",
-		time: "2:00 PM - 3:00 PM",
-		teacher: "Dr. Smith",
-		type: "Lecture",
-		color: "#4287f5",
-		assignments: [
-			{
-				title: "Calculus Quiz",
-				dueDate: "2024-03-20",
-			},
-		],
-		date: {
-			dateString: "2025-06-10",
-			day: 10,
-			month: 6,
-			year: 2025,
-		},
-	},
-	{
-		id: 6,
-		subject: "Computer Science 501",
-		room: "Room 205",
-		time: "2:00 PM - 3:00 PM",
-		teacher: "Dr. Smith",
-		type: "Lecture",
-		color: "#4287f5",
-		assignments: [
-			{
-				title: "Calculus Quiz",
-				dueDate: "2024-03-20",
-			},
-		],
-		date: {
-			dateString: "2025-06-10",
-			day: 10,
-			month: 6,
-			year: 2025,
-		},
-	},
-	{
-		id: 7,
-		subject: "Computer Science 501",
-		room: "Room 205",
-		time: "2:00 PM - 3:00 PM",
-		teacher: "Dr. Smith",
-		type: "Lecture",
-		color: "#4287f5",
-		assignments: [
-			{
-				title: "Calculus Quiz",
-				dueDate: "2024-03-20",
-			},
-		],
-		date: {
-			dateString: "2025-06-11",
-			day: 11,
-			month: 6,
-			year: 2025,
-		},
-	},
+// Utilidad para mapear número de día a nombre en español
+const WEEKDAY_MAP = [
+	"Domingo",
+	"Lunes",
+	"Martes",
+	"Miércoles",
+	"Jueves",
+	"Viernes",
+	"Sábado",
 ];
 
-const INITIAL_DATE = CalendarUtils.getCalendarDateString(new Date());
-
 export default function ScheduleScreen() {
-	const [selected, setSelected] = useState({
-		dateString: "2025-06-11",
-		day: 11,
-		month: 6,
-		year: 2025,
-	});
+	const { INITIAL_DATE, marked, selected, onDayPress } = useSchedule();
+	const { subjects } = useGlobal();
 
-	const getDate = (count: number) => {
-		const date = new Date(INITIAL_DATE);
-		const newDate = date.setDate(date.getDate() + count);
-		return CalendarUtils.getCalendarDateString(newDate);
-	};
-
-	const onDayPress = useCallback((day: any) => {
-		setSelected({
-			dateString: day.dateString,
-			day: day.day,
-			month: day.month,
-			year: day.year,
-		});
-	}, []);
-
-	const marked = useMemo(() => {
-		return {
-			[getDate(-1)]: {
-				dotColor: "red",
-				marked: true,
-			},
-			[selected.dateString]: {
-				selected: true,
-				disableTouchEvent: true,
-				selectedColor: "orange",
-				selectedTextColor: "red",
-			},
-		};
+	// Obtener el nombre del día de la semana seleccionado
+	const selectedWeekday = useMemo(() => {
+		// selected.year, selected.month, selected.day
+		const date = new Date(selected.year, selected.month - 1, selected.day);
+		return WEEKDAY_MAP[date.getDay()];
 	}, [selected]);
+
+	// Filtrar materias que tienen clase el día seleccionado
+	const filteredSubjects = useMemo(() => {
+		if (!subjects || subjects.length === 0) return [];
+		return subjects.filter(
+			(subject: any) =>
+				subject.schedule &&
+				Array.isArray(subject.schedule.days) &&
+				subject.schedule.days.includes(selectedWeekday)
+		);
+	}, [subjects, selectedWeekday]);
+
+	// Render schedule item card
+	const renderScheduleItem = (item: any) => (
+		<View key={item.name} style={styles.card}>
+			<View style={styles.cardHeader}>
+				<Text style={styles.subject}>{item.name}</Text>
+				<Text style={styles.time}>
+					{item.schedule?.startTime} -{item.schedule?.endTime}
+				</Text>
+			</View>
+
+			<View style={styles.cardBody}>
+				<View style={styles.infoRow}>
+					<Ionicons name="location-outline" size={16} color="#777" />
+					<Text style={styles.infoText}>{item.schedule?.classroom}</Text>
+				</View>
+
+				<View style={styles.infoRow}>
+					<Ionicons name="person-outline" size={16} color="#777" />
+					<Text style={styles.infoText}>
+						{item.teacherId ? "Profesor asignado" : "Profesor no asignado"}
+					</Text>
+				</View>
+
+				{item.type && (
+					<View style={styles.infoRow}>
+						<Ionicons name="book-outline" size={16} color="#777" />
+						<Text style={styles.infoText}>{item.type}</Text>
+					</View>
+				)}
+			</View>
+
+			{item.assignments?.length > 0 && (
+				<View style={styles.assignmentsContainer}>
+					<Text style={styles.sectionTitle}>Actividades:</Text>
+					{item.assignments.map((assignment: any) => (
+						<View key={assignment?.id} style={styles.assignmentItem}>
+							<Ionicons
+								name={
+									assignment?.completed ? "checkmark-circle" : "alert-circle"
+								}
+								size={16}
+								color={assignment?.completed ? "#4CAF50" : "#FF9800"}
+							/>
+							<Text style={styles.infoText}>
+								{assignment.title} (Entrega: {assignment.dueDate})
+							</Text>
+						</View>
+					))}
+				</View>
+			)}
+		</View>
+	);
 
 	return (
 		<View style={styles.container}>
@@ -215,118 +97,25 @@ export default function ScheduleScreen() {
 				<Text style={styles.title}>Horario</Text>
 				<Ionicons name="calendar-outline" size={24} color="#333" />
 			</View>
-			<View>
-				<Calendar
-					testID="calendar-first"
-					enableSwipeMonths
-					current={INITIAL_DATE}
-					style={{
-						marginBottom: 12,
-						backgroundColor: "#fff",
-						borderRadius: 10,
-						padding: 10,
-					}}
-					onDayPress={onDayPress}
-					markedDates={marked}
-				/>
-			</View>
 
-			{/* Display activities for selected date */}
+			<Calendar
+				testID="calendar-first"
+				enableSwipeMonths
+				current={INITIAL_DATE}
+				style={styles.calendar}
+				onDayPress={onDayPress}
+				markedDates={marked}
+			/>
+
 			<ScrollView showsVerticalScrollIndicator={false}>
-				{selected.dateString && (
-					<>
-						{scheduleData?.filter(
-							(item) => item.date?.dateString === selected.dateString
-						).length === 0 ? (
-							<View
-								style={[
-									{
-										justifyContent: "center",
-										alignItems: "center",
-                    height: 100
-									},
-								]}>
-								<Text style={[styles.subject, { textAlign: "center" }]}>
-									No hay actividades programadas para este día
-								</Text>
-							</View>
-						) : (
-							scheduleData
-								?.filter(
-									(item) => item.date?.dateString === selected.dateString
-								)
-								.map((item) => (
-									<View
-										key={item.id}
-										style={{
-											backgroundColor: "#fff",
-											borderRadius: 12,
-											padding: 16,
-											marginBottom: 12,
-											flexDirection: "row",
-											alignItems: "center",
-											elevation: 2,
-											shadowColor: "#000",
-											shadowOpacity: 0.05,
-											shadowOffset: { width: 0, height: 2 },
-										}}>
-										<View
-											style={{
-												flex: 1,
-												paddingHorizontal: 10,
-											}}>
-											<Text
-												style={{
-													fontSize: 16,
-													fontWeight: "600",
-													color: "#222",
-													marginBottom: 4,
-												}}>
-												{item.subject}
-											</Text>
-											<Text
-												style={{
-													fontSize: 14,
-													color: "#777",
-													marginBottom: 2,
-												}}>
-												{item.room}
-											</Text>
-											<Text
-												style={{
-													fontSize: 12,
-													color: "#999",
-													marginBottom: 4,
-												}}>
-												{item.time}
-											</Text>
-											{item.teacher && (
-												<Text
-													style={{
-														fontSize: 14,
-														color: "#777",
-														marginBottom: 2,
-													}}>
-													Teacher: {item.teacher}
-												</Text>
-											)}
-											{item.assignments?.map((assignment, index) => (
-												<Text
-													key={index}
-													style={{
-														fontSize: 14,
-														color: "#777",
-														marginBottom: 2,
-													}}>
-													Assignment: {assignment.title} (Due:{" "}
-													{assignment.dueDate})
-												</Text>
-											))}
-										</View>
-									</View>
-								))
-						)}
-					</>
+				{filteredSubjects.length === 0 && subjects === undefined ? (
+					<View style={styles.emptyContainer}>
+						<Text style={styles.emptyText}>
+							No hay actividades programadas para este día
+						</Text>
+					</View>
+				) : (
+					filteredSubjects.map(renderScheduleItem)
 				)}
 			</ScrollView>
 		</View>
@@ -346,90 +135,123 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginBottom: 16,
 	},
-	title: { fontSize: 20, fontWeight: "bold", color: "#1a1a1a" },
-	dayTabs: {
+	title: {
+		fontSize: 20,
+		fontWeight: "bold",
+		color: "#1a1a1a",
+	},
+	calendar: {
 		marginBottom: 12,
 		backgroundColor: "#fff",
 		borderRadius: 10,
-		paddingVertical: 10,
-		paddingHorizontal: 10,
+		padding: 10,
+		elevation: 2,
+		shadowColor: "#000",
+		shadowOpacity: 0.1,
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 4,
 	},
-	monthSelector: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: 15,
-		paddingHorizontal: 10,
-	},
-	monthText: {
-		fontSize: 18,
-		fontWeight: "bold",
-		color: "#333",
-	},
-	calendarGrid: {
-		width: "100%",
-	},
-	weekDaysContainer: {
-		flexDirection: "row",
-		justifyContent: "space-around",
-		marginBottom: 10,
-	},
-	weekDayText: {
-		fontSize: 14,
-		color: "#777",
-		width: "14%", // Each day takes roughly 1/7th of the width
-		textAlign: "center",
-	},
-	daysContainer: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		justifyContent: "flex-start",
-	},
-	calendarDayButton: {
-		width: "14%", // Each day takes roughly 1/7th of the width
-		aspectRatio: 1, // Make it a square
-		justifyContent: "center",
-		alignItems: "center",
-		marginVertical: 4,
-	},
-	selectedCalendarDay: {
-		backgroundColor: "#FF6347", // Tomato color for selected day
-		borderRadius: 999,
-	},
-	calendarDayText: {
-		fontSize: 16,
-		color: "#333",
-	},
-	selectedCalendarDayText: {
-		color: "#fff",
-		fontWeight: "bold",
-	},
-	otherMonthDayText: {
-		color: "#ccc",
-	},
-	dayButton: { paddingHorizontal: 10, paddingVertical: 6 },
-	selectedDay: {
-		borderBottomWidth: 2,
-		borderColor: "#007bff",
-	},
-	dayText: { fontSize: 14, color: "#777" },
-	selectedDayText: { color: "#007bff", fontWeight: "bold" },
-	list: { paddingBottom: 120 },
 	card: {
 		backgroundColor: "#fff",
 		borderRadius: 12,
 		padding: 16,
 		marginBottom: 12,
-		flexDirection: "row",
-		alignItems: "center",
 		elevation: 2,
 		shadowColor: "#000",
 		shadowOpacity: 0.05,
 		shadowOffset: { width: 0, height: 2 },
 	},
-	icon: { marginRight: 12 },
-	cardContent: { flex: 1 },
-	subject: { fontSize: 16, fontWeight: "600", color: "#222" },
-	room: { fontSize: 14, color: "#777" },
-	time: { fontSize: 12, color: "#999" },
+	cardHeader: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 8,
+		borderBottomWidth: 1,
+		borderBottomColor: "#f0f0f0",
+		paddingBottom: 8,
+	},
+	cardBody: {
+		marginVertical: 8,
+	},
+	subject: {
+		fontSize: 16,
+		fontWeight: "600",
+		color: "#222",
+		flex: 1,
+	},
+	time: {
+		fontSize: 14,
+		color: "#4287f5",
+		fontWeight: "500",
+	},
+	infoRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: 4,
+	},
+	infoText: {
+		fontSize: 14,
+		color: "#777",
+		marginLeft: 8,
+	},
+	assignmentsContainer: {
+		marginTop: 12,
+		borderTopWidth: 1,
+		borderTopColor: "#f0f0f0",
+		paddingTop: 8,
+	},
+	sectionTitle: {
+		fontSize: 14,
+		fontWeight: "600",
+		color: "#555",
+		marginBottom: 6,
+	},
+	assignmentItem: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: 4,
+	},
+	assignmentText: {
+		fontSize: 13,
+		color: "#666",
+		marginLeft: 8,
+		flex: 1,
+	},
+	emptyContainer: {
+		justifyContent: "center",
+		alignItems: "center",
+		height: 100,
+		backgroundColor: "#fff",
+		borderRadius: 12,
+		padding: 16,
+	},
+	emptyText: {
+		fontSize: 16,
+		color: "#777",
+		textAlign: "center",
+	},
+	loadingContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#F2F3F5",
+	},
+	loadingText: {
+		marginTop: 16,
+		fontSize: 16,
+		color: "#4287f5",
+	},
+	errorContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#F2F3F5",
+		padding: 20,
+	},
+	errorText: {
+		fontSize: 16,
+		color: "#FF3B30",
+		textAlign: "center",
+		marginBottom: 20,
+	},
 });

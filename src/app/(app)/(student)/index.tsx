@@ -1,12 +1,11 @@
 // HomeScreen.tsx
 import ViewContainer from "@/src/components/layouts/container";
 import TextBase from "@/src/components/shared/TextBase";
-import { useUserState } from "@/src/core/hooks/zustand/useUserState";
-import { Palete, TextFontSize } from "@/src/styles/global.styles";
+import { useGlobal } from "@/src/features/global/hooks";
+import { Palete } from "@/src/styles/global.styles";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import {
-	Image,
 	Pressable,
 	ScrollView,
 	StyleSheet,
@@ -14,9 +13,18 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-
 export default function HomeScreen() {
-	const { user } = useUserState();
+	const { subjects } = useGlobal();
+
+	console.log(subjects)
+
+	if (subjects === undefined || subjects === null) {
+		return (
+			<View>
+				<Text>Error en la consulta, los datos salieron undefined o nulos</Text>
+			</View>
+		)
+	}
 
 	return (
 		<ViewContainer bgColor={Palete.background}>
@@ -46,130 +54,77 @@ export default function HomeScreen() {
 							<TextBase style={styles.seeAll}>Ver todos</TextBase>
 						</TouchableOpacity>
 					</View>
-					<ClassCard
-						icon="book-outline"
-						title="Matematicas 101"
-						time="09:00 AM"
-						joining="Room 204"
-					/>
-					<ClassCard
-						icon="language-outline"
-						title="English Literature"
-						time="11:00 AM"
-						joining="Room 305"
-					/>
-					<ClassCard
-						icon="language-outline"
-						title="English Literature"
-						time="11:00 AM"
-						joining="Room 305"
-					/>
-					<ClassCard
-						icon="language-outline"
-						title="English Literature"
-						time="11:00 AM"
-						joining="Room 305"
-					/>
 				</View>
 
-				{/* Pending Activities Section */}
-				<View style={styles.section}>
-					<View style={styles.sectionHeader}>
-						<TextBase style={styles.sectionTitle}>
-							Actividades pendientes
-						</TextBase>
-						<TouchableOpacity>
-							<TextBase style={styles.seeAll}>Ver todos</TextBase>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.classCard}>
-						<MaterialIcons
-							name="assignment"
-							size={22}
-							color="#FF6B6B"
-							style={styles.classIcon}
-						/>
-						<View style={{ flex: 1 }}>
-							<TextBase style={styles.classTitle}>Math Assignment #3</TextBase>
-							<TextBase style={styles.classTime}>Due Tomorrow</TextBase>
+				<ScrollView showsVerticalScrollIndicator={false}>
+					{subjects?.length === 0 && subjects === undefined ? (
+						<View>
+							<Text style={styles.emptyText}>
+								No hay clases programadas para este día
+							</Text>
 						</View>
-						<MaterialIcons name="arrow-forward-ios" size={20} color="#999" />
-					</View>
-					<View style={styles.classCard}>
-						<MaterialIcons
-							name="assignment"
-							size={22}
-							color="#FF6B6B"
-							style={styles.classIcon}
-						/>
-						<View style={{ flex: 1 }}>
-							<TextBase style={styles.classTitle}>Math Assignment #3</TextBase>
-							<TextBase style={styles.classTime}>Due Tomorrow</TextBase>
-						</View>
-						<MaterialIcons name="arrow-forward-ios" size={20} color="#999" />
-					</View>
-					<View style={styles.classCard}>
-						<MaterialIcons
-							name="assignment"
-							size={22}
-							color="#FF6B6B"
-							style={styles.classIcon}
-						/>
-						<View style={{ flex: 1 }}>
-							<TextBase style={styles.classTitle}>Math Assignment #3</TextBase>
-							<TextBase style={styles.classTime}>Due Tomorrow</TextBase>
-						</View>
-						<MaterialIcons name="arrow-forward-ios" size={20} color="#999" />
-					</View>
-					<View style={styles.classCard}>
-						<MaterialIcons
-							name="quiz"
-							size={22}
-							color="#4CAF50"
-							style={styles.classIcon}
-						/>
-						<View style={{ flex: 1 }}>
-							<TextBase style={styles.classTitle}>Literature Quiz</TextBase>
-							<TextBase style={styles.classTime}>Due in 3 days</TextBase>
-						</View>
-						<MaterialIcons name="arrow-forward-ios" size={20} color="#999" />
-					</View>
-				</View>
+					) : (
+						subjects.map((item: any) => (
+							<View key={item.uuid} style={styles.card}>
+								<View style={styles.cardHeader}>
+									<Text style={styles.subject}>{item.name}</Text>
+									<Text style={styles.time}>
+										{item.schedule?.startTime} -{item.schedule?.endTime}
+									</Text>
+								</View>
 
-				{/* Quick Stats Section */}
-				<TextBase size={TextFontSize.H2} align="center" >Indicadores</TextBase>
-				<View style={styles.statsContainer}>
-					<View style={styles.statCard}>
-						<TextBase style={styles.statNumber}>85%</TextBase>
-						<TextBase style={styles.statLabel}>Asistencia</TextBase>
-					</View>
-					<View style={styles.statCard}>
-						<TextBase style={styles.statNumber}>12</TextBase>
-						<TextBase style={styles.statLabel}>Asignaciones</TextBase>
-					</View>
-					<View style={styles.statCard}>
-						<TextBase style={styles.statNumber}>4.5</TextBase>
-						<TextBase style={styles.statLabel}>Promedio de Notas</TextBase>
-					</View>
-				</View>
+								<View style={styles.cardBody}>
+									<View style={styles.infoRow}>
+										<Ionicons name="location-outline" size={16} color="#777" />
+										<Text style={styles.infoText}>
+											{item.schedule?.classroom}
+										</Text>
+									</View>
+
+									<View style={styles.infoRow}>
+										<Ionicons name="person-outline" size={16} color="#777" />
+										<Text style={styles.infoText}>
+											{item.teacherId && "Profenor no asignado"}
+										</Text>
+									</View>
+
+									{item.type && (
+										<View style={styles.infoRow}>
+											<Ionicons name="book-outline" size={16} color="#777" />
+											<Text style={styles.infoText}>{item.type}</Text>
+										</View>
+									)}
+								</View>
+
+								{item.assignments && item.assignments.length > 0 && (
+									<View style={styles.assignmentsContainer}>
+										<Text style={styles.sectionTitle}>Actividades:</Text>
+										{item.assignments.map((assignment: any) => (
+											<View key={assignment?.id} style={styles.assignmentItem}>
+												<Ionicons
+													name={
+														assignment?.completed
+															? "checkmark-circle"
+															: "alert-circle"
+													}
+													size={16}
+													color={assignment?.completed ? "#4CAF50" : "#FF9800"}
+												/>
+												<Text style={styles.assignmentText}>
+													{assignment.title} (Entrega: {assignment.dueDate})
+												</Text>
+											</View>
+										))}
+									</View>
+								)}
+							</View>
+						))
+					)}
+				</ScrollView>
 			</ScrollView>
 		</ViewContainer>
 	);
 }
-
-const ClassCard = ({ icon, title, time, joining }: any) => (
-	<View style={styles.classCard}>
-		<Ionicons name={icon} size={22} color="#007bff" style={styles.classIcon} />
-		<View style={{ flex: 1 }}>
-			<Text style={styles.classTitle}>{title}</Text>
-			<View style={styles.classMeta}>
-				<Text style={styles.classTime}>{time}</Text>
-				<Text style={styles.classJoining}>{joining}</Text>
-			</View>
-		</View>
-		<Ionicons name="chevron-forward-outline" size={20} color="#999" />
-	</View>
-);
 
 const styles = StyleSheet.create({
 	avatar: {
@@ -258,7 +213,7 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 		flexDirection: "row",
 		alignItems: "center",
-		gap: 10, 
+		gap: 10,
 	},
 	courseTitle: {
 		fontSize: 15,
@@ -280,5 +235,124 @@ const styles = StyleSheet.create({
 	courseDesc: {
 		fontSize: 12,
 		color: "#777",
+	},
+	header: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 16,
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: "bold",
+		color: "#1a1a1a",
+	},
+	calendar: {
+		marginBottom: 12,
+		backgroundColor: "#fff",
+		borderRadius: 10,
+		padding: 10,
+		elevation: 2,
+		shadowColor: "#000",
+		shadowOpacity: 0.1,
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 4,
+	},
+	card: {
+		backgroundColor: "#fff",
+		borderRadius: 12,
+		padding: 16,
+		marginBottom: 12,
+		elevation: 2,
+		shadowColor: "#000",
+		shadowOpacity: 0.05,
+		shadowOffset: { width: 0, height: 2 },
+	},
+	cardHeader: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 8,
+		borderBottomWidth: 1,
+		borderBottomColor: "#f0f0f0",
+		paddingBottom: 8,
+	},
+	cardBody: {
+		marginVertical: 8,
+	},
+	subject: {
+		fontSize: 16,
+		fontWeight: "600",
+		color: "#222",
+		flex: 1,
+	},
+	time: {
+		fontSize: 14,
+		color: "#4287f5",
+		fontWeight: "500",
+	},
+	infoRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: 4,
+	},
+	infoText: {
+		fontSize: 14,
+		color: "#777",
+		marginLeft: 8,
+	},
+	assignmentsContainer: {
+		marginTop: 12,
+		borderTopWidth: 1,
+		borderTopColor: "#f0f0f0",
+		paddingTop: 8,
+	},
+	assignmentItem: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom: 4,
+	},
+	assignmentText: {
+		fontSize: 13,
+		color: "#666",
+		marginLeft: 8,
+		flex: 1,
+	},
+	emptyContainer: {
+		justifyContent: "center",
+		alignItems: "center",
+		height: 100,
+		backgroundColor: "#fff",
+		borderRadius: 12,
+		padding: 16,
+	},
+	emptyText: {
+		fontSize: 16,
+		color: "#777",
+		textAlign: "center",
+	},
+	loadingContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#F2F3F5",
+	},
+	loadingText: {
+		marginTop: 16,
+		fontSize: 16,
+		color: "#4287f5",
+	},
+	errorContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#F2F3F5",
+		padding: 20,
+	},
+	errorText: {
+		fontSize: 16,
+		color: "#FF3B30",
+		textAlign: "center",
+		marginBottom: 20,
 	},
 });

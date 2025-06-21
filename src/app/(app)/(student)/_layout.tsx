@@ -84,7 +84,9 @@ export default function StudentTabsLayout() {
 									</TextBase>{" "}
 									👋
 								</TextBase>
-								<TextBase size={TextFontSize.PARAGRAPH} color="gray">Tienes actividades pendientes hoy!</TextBase>
+								<TextBase size={TextFontSize.PARAGRAPH} color="gray">
+									Tienes actividades pendientes hoy!
+								</TextBase>
 							</View>
 						</View>
 					),
@@ -105,6 +107,7 @@ export default function StudentTabsLayout() {
 								borderRadius: 50,
 							}}>
 							<ButtonBase
+								onPress={() => router.replace("/notifications")}
 								icon={<Ionicons size={28} name="notifications-outline" />}
 								style={{
 									backgroundColor: "transparent",
@@ -141,6 +144,22 @@ export default function StudentTabsLayout() {
 							size={size}
 						/>
 					),
+					headerShown: false,
+					// href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="courses/[id]"
+				options={{
+					title: "Cursos",
+					tabBarIcon: ({ color, size }) => (
+						<MaterialCommunityIcons
+							name="book-open-outline"
+							color={color}
+							size={size}
+						/>
+					),
+					headerShown: false, // Oculta el header
 					href: null,
 				}}
 			/>
@@ -153,6 +172,7 @@ export default function StudentTabsLayout() {
 					),
 					headerTitle: "Mis Calificaciones",
 					headerTitleAlign: "center", // Centra el título del header
+					href: null,
 					headerStyle: {
 						backgroundColor: Palete.background,
 					},
@@ -197,6 +217,27 @@ export default function StudentTabsLayout() {
 							<Ionicons size={30} name="arrow-back" />
 						</Pressable>
 					),
+				}}
+			/>
+			<Tabs.Screen
+				name="(profile)/edit-profile"
+				options={{
+					headerShown: false,
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="(profile)/notifications"
+				options={{
+					headerShown: false,
+					href: null,
+				}}
+			/>
+			<Tabs.Screen
+				name="(profile)/settings"
+				options={{
+					headerShown: false,
+					href: null,
 				}}
 			/>
 		</Tabs>
