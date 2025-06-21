@@ -15,7 +15,7 @@ export const useLogin = () => {
 		mutationFn: AuthenticationServices.login,
 		retry: 1,
 		onSuccess: (data) => {
-			if (data) {
+			if (data.access_token) {
 				setToken(data.access_token);
 				setTimeout(() => {
 					router.replace("/");
@@ -23,6 +23,7 @@ export const useLogin = () => {
 			}
 		},
 		onError: (error: any) => {
+			console.log("Error en el login", error)
 			setTimeout(() => {
 				router.replace("/");
 			}, 3000);

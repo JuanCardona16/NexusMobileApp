@@ -30,7 +30,6 @@ export const useRegister = () => {
 		onSuccess: (data) => {
 			if (data.access_token) {
 				setToken(data.access_token);
-				// Navigate to the home page
 				openRegisterSuccess();
 				setTimeout(() => {
 					closeLoginSuccess();

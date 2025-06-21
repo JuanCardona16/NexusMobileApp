@@ -6,6 +6,7 @@
 		"start": "expo start",
 		"dev:start": "expo start --dev-client",
 		"dev:apk": "eas build --platform android --profile preview",
+		"dev:apk:android:production": "eas build --platform android --profile production",
 		"prebuild:clean": "expo prebuild --clean",
 		"reset-project": "node ./scripts/reset-project.js",
 		"android": "expo run:android",
